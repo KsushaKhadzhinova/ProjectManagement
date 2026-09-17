@@ -1,0 +1,35 @@
+digraph WBS {
+    rankdir=TB;
+    graph [fontname="Arial", nodesep=0.35, ranksep=0.55, bgcolor="white"];
+    node [fontname="Arial", shape=box, style="rounded,filled", fontsize=12, margin="0.18,0.12"];
+    edge [color="#5b6b7a"];
+
+    root [label="DiagramCode\n(Волна 1 — курсовой срез)", fillcolor="#1E2761", fontcolor="white", fontsize=14, shape=box, style="rounded,filled"];
+
+    s1 [label="Этап 1\nПодготовка", fillcolor="#CADCFC"];
+    s2 [label="Этап 2\nРазработка backend", fillcolor="#CADCFC"];
+    s3 [label="Этап 3\nAPI и frontend", fillcolor="#CADCFC"];
+    s4 [label="Этап 4\nТестирование и защита", fillcolor="#CADCFC"];
+
+    root -> s1; root -> s2; root -> s3; root -> s4;
+
+    t1 [label="1. Требования\nи архитектура", fillcolor="#F2F5FB"];
+    t2 [label="2. DSL-грамматика\nи модель данных", fillcolor="#F2F5FB"];
+    t3 [label="3. Окружение\nразработки и CI", fillcolor="#F2F5FB"];
+    s1 -> t1; s1 -> t2; s1 -> t3;
+
+    t4 [label="4. DSL-парсер\n(лексер, AST)", fillcolor="#F2F5FB"];
+    t5 [label="5. Модель данных\nи репозитории", fillcolor="#F2F5FB"];
+    t6 [label="6. Нотация ERD\n(валидация + рендер)", fillcolor="#F2F5FB"];
+    t7 [label="7. Аутентификация\n(JWT, bcrypt)", fillcolor="#F2F5FB"];
+    s2 -> t4; s2 -> t5; s2 -> t6; s2 -> t7;
+
+    t8 [label="8. REST API\nдиаграмм и версий", fillcolor="#F2F5FB"];
+    t9 [label="9. IDE-оболочка\n(React + Monaco)", fillcolor="#F2F5FB"];
+    t10 [label="10. Канвас рендера,\nRun/Save/Export", fillcolor="#F2F5FB"];
+    s3 -> t8; s3 -> t9; s3 -> t10;
+
+    t11 [label="11. Тестирование\n(pytest + Jest)", fillcolor="#F2F5FB"];
+    t12 [label="12. Подготовка\nи защита РПЗ", fillcolor="#F2F5FB"];
+    s4 -> t11; s4 -> t12;
+}
