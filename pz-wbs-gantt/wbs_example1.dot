@@ -1,0 +1,35 @@
+digraph WBS {
+    rankdir=TB;
+    graph [fontname="Arial", nodesep=0.35, ranksep=0.55, bgcolor="white"];
+    node [fontname="Arial", shape=box, style="rounded,filled", fontsize=12, margin="0.18,0.12"];
+    edge [color="#5b6b7a"];
+
+    root [label="Обучение сотрудников\nкибербезопасности (Пример 1)", fillcolor="#1E2761", fontcolor="white", fontsize=14, shape=box, style="rounded,filled"];
+
+    s1 [label="Этап 1\nПодготовка", fillcolor="#CADCFC"];
+    s2 [label="Этап 2\nНастройка платформы", fillcolor="#CADCFC"];
+    s3 [label="Этап 3\nРазработка контента и обучение", fillcolor="#CADCFC"];
+    s4 [label="Этап 4\nКонтроль и внедрение", fillcolor="#CADCFC"];
+
+    root -> s1; root -> s2; root -> s3; root -> s4;
+
+    t1 [label="1. Устав и\nстартовое совещание", fillcolor="#F2F5FB"];
+    t2 [label="2. Анализ\nрегламентов ИБ", fillcolor="#F2F5FB"];
+    t3 [label="3. Фишинг-замер\n+ отчёт", fillcolor="#F2F5FB"];
+    s1 -> t1; s1 -> t2; s1 -> t3;
+
+    t4 [label="4. Выбор вендора\n+ договор", fillcolor="#F2F5FB"];
+    t5 [label="5. Учётные записи\n(200 чел.)", fillcolor="#F2F5FB"];
+    t6 [label="6. Настройка\nwhite-list", fillcolor="#F2F5FB"];
+    s2 -> t4; s2 -> t5; s2 -> t6;
+
+    t7 [label="7. Курс по ПДн\n(№ 99-З)", fillcolor="#F2F5FB"];
+    t8 [label="8. Модули, видео,\nтесты", fillcolor="#F2F5FB"];
+    t9 [label="9. Информирование\nсотрудников", fillcolor="#F2F5FB"];
+    t10 [label="10. Микрообучение\n(4 недели)", fillcolor="#F2F5FB"];
+    s3 -> t7; s3 -> t8; s3 -> t9; s3 -> t10;
+
+    t11 [label="11. Итоговый фишинг\n+ тест", fillcolor="#F2F5FB"];
+    t12 [label="12. Анализ KPI,\nотчёт, регламент", fillcolor="#F2F5FB"];
+    s4 -> t11; s4 -> t12;
+}
