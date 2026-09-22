@@ -77,6 +77,9 @@ if __name__ == "__main__":
         crit = "ДА" if TF[t] == 0 else "нет"
         print(f"{t:>2} | {tasks[t]['name']:<48} | {tasks[t]['dur']:>3} | {ES[t]:>3} | {EF[t]:>3} | {LS[t]:>3} | {LF[t]:>3} | {TF[t]:>3} | {crit}")
 
+    elapsed = duration - min(ES.values())  # ES нумеруется с 1, а не с 0
+
     print()
     print("Критический путь:", " -> ".join(str(t) for t in critical_path))
-    print("Общая длительность проекта:", duration, "дней")
+    print(f"Внутренняя нумерация формул (EF последней работы): {duration}")
+    print(f"Общая длительность проекта: {elapsed} рабочих дней")

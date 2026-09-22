@@ -1,27 +1,42 @@
 # -*- coding: utf-8 -*-
 """
 Независимая проверка итогового коэффициента риска (вероятность x воздействие)
-для реестра рисков DiagramCode — без Excel, чистым Python. Результат должен
-совпадать со столбцом H ("Итоговый коэффициент") в "Карта рисков - DiagramCode.xlsx"
-(лист "Таблица с рисками", строки 4-12).
+для реестра рисков DiagramCode — без доверия формулам Excel, чистым Python.
+Читает сырые значения F/G прямо из файла (а не из захардкоженной копии), затем
+пересчитывает H = F*G сама, поэтому при правках "Карта рисков - DiagramCode.xlsx"
+скрипт всегда сверяется с текущим состоянием файла, а не с его снимком на момент
+написания.
 
 Запуск: python verify_risk_scores.py
 """
 
-risks = [
-    ("Ветки feature/notation-bpmn-and-collab и feature/real-ide-app не смёржены к дате защиты", 0.5, 0.9),
-    ("Нотации uml.class и idef0 (FR-NOT-06) не реализованы к сроку", 0.6, 0.7),
-    ("Реальная БД Neon PostgreSQL и Redis не подключены и не проверены end-to-end", 0.4, 0.5),
-    ("Единственный разработчик перегружен или заболевает перед защитой", 0.3, 0.8),
-    ("Качество кода фоновых ИИ-агентов не соответствует ожиданиям при ручной проверке", 0.5, 0.6),
-    ("AI-провайдер остаётся в режиме заглушки (StubAIProvider)", 0.6, 0.3),
-    ("Хостинг-провайдер (Render/Netlify) недоступен или меняет бесплатные лимиты", 0.2, 0.7),
-    ("Смешение трёх обязательств (лабы Часть 1/2 + курсовая + реальный продукт) в одном репозитории", 0.4, 0.6),
-    ("Дата защиты курсовой работы смещается или уточняется поздно", 0.2, 0.5),
-]
+import os
+import openpyxl
+
+XLSX_PATH = os.path.join(os.path.dirname(__file__), "Карта рисков - DiagramCode.xlsx")
+SHEET = "Таблица с рисками"
+FIRST_ROW = 4
+LAST_ROW = 23  # конец диапазона таблицы Таблица1; пустые строки просто пропускаются
+
+
+def load_risks(path=XLSX_PATH):
+    wb = openpyxl.load_workbook(path, data_only=False)
+    ws = wb[SHEET]
+    risks = []
+    for row in range(FIRST_ROW, LAST_ROW + 1):
+        name = ws[f"C{row}"].value
+        f = ws[f"F{row}"].value
+        g = ws[f"G{row}"].value
+        if name is None or f is None or g is None:
+            continue
+        risks.append((name, float(f), float(g)))
+    return risks
+
 
 if __name__ == "__main__":
+    risks = load_risks()
     ranked = sorted(risks, key=lambda r: r[1] * r[2], reverse=True)
+    print(f"Прочитано рисков из файла: {len(risks)}")
     print(f"{'#':>2} | {'F':>4} | {'G':>4} | {'H=F*G':>6} | Риск")
     print("-" * 90)
     for i, (name, f, g) in enumerate(ranked, 1):
