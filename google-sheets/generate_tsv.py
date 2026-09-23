@@ -92,10 +92,10 @@ def build_cpm_sheet(tasks):
         lines.append("\t".join(cells))
 
     lines.append("")
-    lines.append(f"Общая длительность проекта, рабочих дней\t=MAX(F{first}:F{last})-MIN(E{first}:E{last})")
+    lines.append(f"Длительность проекта, рабочих дней\t=MAX(F{first}:F{last})-MIN(E{first}:E{last})")
     lines.append(f'Критический путь\t=TEXTJOIN(" → ",TRUE,FILTER(A{first}:A{last},J{first}:J{last}="ДА"))')
-    lines.append(f'Проверка: сумма длительностей работ критического пути\t=SUMIF(J{first}:J{last},"ДА",D{first}:D{last})')
-    lines.append("Легенда графика Ганта (столбцы L и дальше)\t█ — работа на критическом пути, ░ — работа с резервом")
+    lines.append(f'Проверка: сумма длит. крит. пути\t=SUMIF(J{first}:J{last},"ДА",D{first}:D{last})')
+    lines.append("Легенда (столбцы L и дальше)\t█ — критический путь, ░ — работа с резервом")
     return "\n".join(lines) + "\n", duration
 
 
