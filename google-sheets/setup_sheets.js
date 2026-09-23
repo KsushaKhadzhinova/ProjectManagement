@@ -12,9 +12,13 @@ var COLORS = {
 
 function main(ss) {
   ss = ss || SpreadsheetApp.getActiveSpreadsheet();
-  var leftover = ss.getSheetByName('WBS-Гант');
-  if (leftover && leftover.getLastRow() === 0 && !ss.getSheetByName('WBS-Гант DiagramCode')) {
-    leftover.setName('WBS-Гант DiagramCode');
+  try {
+    var leftover = ss.getSheetByName('WBS-Гант');
+    if (leftover && leftover.getLastRow() === 0 && !ss.getSheetByName('WBS-Гант DiagramCode')) {
+      leftover.setName('WBS-Гант DiagramCode');
+    }
+  } catch (e) {
+    Logger.log('Пустую вкладку WBS-Гант переименовать не удалось: ' + e);
   }
   buildCpm_(ss, 'WBS-Гант DiagramCode', DATA.a, 'DiagramCode, курсовой срез');
   buildCpm_(ss, 'WBS-Гант Пример 1', DATA.b, 'Пример 1 из методички');
