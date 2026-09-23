@@ -9,7 +9,9 @@
 """
 
 import importlib.util
+import json
 import os
+import re
 
 import openpyxl
 
@@ -153,6 +155,40 @@ def main():
         with open(os.path.join(HERE, fname), "w", encoding="utf-8", newline="\n") as fh:
             fh.write(text)
         print(f"{fname}: {info}")
+
+    write_apps_script(outputs)
+
+
+NUM_RE = re.compile(r"^-?\d+(\.\d+)?$")
+
+
+def tsv_to_rows(text):
+    rows = []
+    for line in text.rstrip("\n").split("\n"):
+        cells = []
+        for v in line.split("\t"):
+            if NUM_RE.match(v):
+                cells.append(float(v) if "." in v else int(v))
+            else:
+                cells.append(v)
+        rows.append(cells)
+    width = max(len(r) for r in rows)
+    return [r + [""] * (width - len(r)) for r in rows]
+
+
+def write_apps_script(outputs):
+    data = {
+        "a": tsv_to_rows(outputs[0][1]),
+        "b": tsv_to_rows(outputs[1][1]),
+        "r": tsv_to_rows(outputs[2][1]),
+    }
+    template_path = os.path.join(HERE, "setup_sheets.template.js")
+    with open(template_path, encoding="utf-8") as fh:
+        template = fh.read()
+    js = template.replace("/*__DATA__*/null", json.dumps(data, ensure_ascii=False))
+    with open(os.path.join(HERE, "setup_sheets.js"), "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(js)
+    print("setup_sheets.js: скрипт для Google Apps Script")
 
 
 if __name__ == "__main__":
