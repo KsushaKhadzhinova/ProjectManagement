@@ -12,18 +12,18 @@ var COLORS = {
 
 function main(ss) {
   ss = ss || SpreadsheetApp.getActiveSpreadsheet();
-  try {
-    var leftover = ss.getSheetByName('WBS-Гант');
-    if (leftover && leftover.getLastRow() === 0 && !ss.getSheetByName('WBS-Гант DiagramCode')) {
-      leftover.setName('WBS-Гант DiagramCode');
-    }
-  } catch (e) {
-    Logger.log('Пустую вкладку WBS-Гант переименовать не удалось: ' + e);
-  }
   buildCpm_(ss, 'WBS-Гант DiagramCode', DATA.a, 'DiagramCode, курсовой срез');
   buildCpm_(ss, 'WBS-Гант Пример 1', DATA.b, 'Пример 1 из методички');
   buildRisks_(ss, 'Риски', DATA.r);
   ss.setActiveSheet(ss.getSheetByName('WBS-Гант DiagramCode'));
+  try {
+    var leftover = ss.getSheetByName('WBS-Гант');
+    if (leftover && leftover.getLastRow() === 0) {
+      ss.deleteSheet(leftover);
+    }
+  } catch (e) {
+    Logger.log('Пустую вкладку WBS-Гант удалить не удалось: ' + e);
+  }
   SpreadsheetApp.flush();
   return 'OK';
 }
@@ -101,10 +101,10 @@ function buildCpm_(ss, name, rows, title) {
   ]);
 
   var noteRow = r + 1;
-  sh.getRange(noteRow, 2).setValue('Данные для полосовой диаграммы Ганта — формулы, берутся из таблицы выше')
+  sh.getRange(noteRow, 2).setValue('Данные для полосовой диаграммы Ганта (формулы из таблицы выше): 2-й столбец — смещение ES − 1, невидимая часть полосы')
     .setFontStyle('italic').setFontColor(COLORS.note);
   var hdr = noteRow + 1;
-  sh.getRange(hdr, 2, 1, 4).setValues([['Работа', 'Смещение (ES − 1)', 'Критический путь', 'Есть резерв']])
+  sh.getRange(hdr, 2, 1, 4).setValues([['Работа', ' ', 'Критический путь', 'Есть резерв']])
     .setFontWeight('bold').setBackground(COLORS.subHeader);
   var helper = [];
   for (var t = 0; t < nTasks; t++) {
