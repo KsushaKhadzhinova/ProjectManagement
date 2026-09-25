@@ -1,0 +1,37 @@
+digraph NET {
+  graph [rankdir=LR, nodesep=0.35, ranksep=0.55];
+  node [shape=plain, fontname="Arial", fontsize=10];
+  edge [color="#555555"];
+  n1 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>1</td><td bgcolor="#f4b183"><b>1</b></td><td>2</td></tr><tr><td colspan="3">Требования (SRS)</td></tr><tr><td>1</td><td>D=1, R=0</td><td>2</td></tr></table>>];
+  n2 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>2</td><td bgcolor="#f4b183"><b>2</b></td><td>3</td></tr><tr><td colspan="3">Архитектура и<br/>каталог нотаций</td></tr><tr><td>2</td><td>D=1, R=0</td><td>3</td></tr></table>>];
+  n1 -> n2 [color="#c00000", penwidth=2.2];
+  n3 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#2f5597" bgcolor="white"><tr><td>2</td><td bgcolor="#bdd7ee"><b>3</b></td><td>3</td></tr><tr><td colspan="3">Макеты интерфейса<br/>IDE</td></tr><tr><td>4</td><td>D=1, R=2</td><td>5</td></tr></table>>];
+  n1 -> n3 [];
+  n4 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>3</td><td bgcolor="#f4b183"><b>4</b></td><td>4</td></tr><tr><td colspan="3">Фундамент: CI,<br/>Compose, skeleton</td></tr><tr><td>3</td><td>D=1, R=0</td><td>4</td></tr></table>>];
+  n2 -> n4 [color="#c00000", penwidth=2.2];
+  n5 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>4</td><td bgcolor="#f4b183"><b>5</b></td><td>7</td></tr><tr><td colspan="3">Грамматика DSL и<br/>парсер</td></tr><tr><td>4</td><td>D=3, R=0</td><td>7</td></tr></table>>];
+  n4 -> n5 [color="#c00000", penwidth=2.2];
+  n6 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#2f5597" bgcolor="white"><tr><td>7</td><td bgcolor="#bdd7ee"><b>6</b></td><td>9</td></tr><tr><td colspan="3">Валидация нотаций</td></tr><tr><td>8</td><td>D=2, R=1</td><td>10</td></tr></table>>];
+  n5 -> n6 [];
+  n7 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#2f5597" bgcolor="white"><tr><td>4</td><td bgcolor="#bdd7ee"><b>7</b></td><td>6</td></tr><tr><td colspan="3">Gateway: CRUD, JWT</td></tr><tr><td>6</td><td>D=2, R=2</td><td>8</td></tr></table>>];
+  n4 -> n7 [];
+  n8 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#2f5597" bgcolor="white"><tr><td>6</td><td bgcolor="#bdd7ee"><b>8</b></td><td>7</td></tr><tr><td colspan="3">Workspace: история<br/>версий</td></tr><tr><td>8</td><td>D=1, R=2</td><td>9</td></tr></table>>];
+  n7 -> n8 [];
+  n9 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#2f5597" bgcolor="white"><tr><td>4</td><td bgcolor="#bdd7ee"><b>9</b></td><td>6</td></tr><tr><td colspan="3">Оболочка IDE и<br/>Monaco</td></tr><tr><td>5</td><td>D=2, R=1</td><td>7</td></tr></table>>];
+  n3 -> n9 [];
+  n4 -> n9 [];
+  n10 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>7</td><td bgcolor="#f4b183"><b>10</b></td><td>9</td></tr><tr><td colspan="3">SVG-холст и<br/>кросс-подсветка</td></tr><tr><td>7</td><td>D=2, R=0</td><td>9</td></tr></table>>];
+  n5 -> n10 [color="#c00000", penwidth=2.2];
+  n9 -> n10 [];
+  n11 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>9</td><td bgcolor="#f4b183"><b>11</b></td><td>10</td></tr><tr><td colspan="3">Сохранение и экспорт</td></tr><tr><td>9</td><td>D=1, R=0</td><td>10</td></tr></table>>];
+  n8 -> n11 [];
+  n10 -> n11 [color="#c00000", penwidth=2.2];
+  n12 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#2f5597" bgcolor="white"><tr><td>6</td><td bgcolor="#bdd7ee"><b>12</b></td><td>7</td></tr><tr><td colspan="3">AI-ассистент<br/>(заглушка)</td></tr><tr><td>9</td><td>D=1, R=3</td><td>10</td></tr></table>>];
+  n7 -> n12 [];
+  n13 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>10</td><td bgcolor="#f4b183"><b>13</b></td><td>11</td></tr><tr><td colspan="3">E2E, Lighthouse,<br/>аудит</td></tr><tr><td>10</td><td>D=1, R=0</td><td>11</td></tr></table>>];
+  n6 -> n13 [];
+  n11 -> n13 [color="#c00000", penwidth=2.2];
+  n12 -> n13 [];
+  n14 [label=<<table border="1" cellborder="1" cellspacing="0" cellpadding="3" color="#c00000" bgcolor="white"><tr><td>11</td><td bgcolor="#f4b183"><b>14</b></td><td>12</td></tr><tr><td colspan="3">Демо-стенд и записка</td></tr><tr><td>11</td><td>D=1, R=0</td><td>12</td></tr></table>>];
+  n13 -> n14 [color="#c00000", penwidth=2.2];
+}

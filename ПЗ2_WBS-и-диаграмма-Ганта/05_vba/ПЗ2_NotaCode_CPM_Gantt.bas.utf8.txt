@@ -1,0 +1,264 @@
+Attribute VB_Name = "PZ2_NotaCode"
+' =====================================================================
+' ПЗ2. WBS, PERT, метод критического пути и диаграмма Ганта — NotaCode
+' Файл-шаблон: "Планировщик проекта на основе диаграммы Ганта - 60121.xlsx"
+'
+' Как запустить:
+'   1. Открыть шаблон в Excel, сохранить копию как .xlsm (книга с макросами).
+'   2. Alt+F11 -> File -> Import File... -> выбрать ПЗ2_NotaCode_CPM_Gantt.bas
+'      (кодировка файла .bas — Windows-1251, это нормально для VBA).
+'   3. Alt+F8 -> PZ2_RunAll -> Выполнить.
+'
+' Что делает макрос:
+'   - лист "WBS NotaCode": WBS (14 работ), оценки O/M/P, формула PERT (O+4M+P)/6,
+'     длительность в месяцах и неделях, предшественники;
+'   - лист "ТАБЛИЦА ДАННЫХ": задачи, предшественники, последователи,
+'     ES и LF (рассчитаны прямым и обратным проходом), EF=ES+D, LS=LF-D,
+'     резерв TS=LS-ES, признак критического пути;
+'   - лист "Планировщик проекта": рассматриваемый период = длительность проекта;
+'   - лист "Гант NotaCode": собственная диаграмма Ганта по неделям с датами,
+'     критические работы — красным, резервы — серым;
+'   - итог в окне сообщения: длительность и критический путь.
+' Единица планировщика — 1 период = 1 неделя = 0,25 месяца.
+' =====================================================================
+Option Explicit
+
+Private Const N As Long = 14
+Private Const START_DATE As String = "21.09.2026"
+
+Private code(1 To N) As String
+Private nm(1 To N) As String
+Private o(1 To N) As Double, m(1 To N) As Double, p(1 To N) As Double
+Private preds(1 To N) As String
+Private dur(1 To N) As Long
+Private es(1 To N) As Long, ef(1 To N) As Long, ls(1 To N) As Long, lf(1 To N) As Long
+Private succ(1 To N) As String
+
+Private Sub LoadData()
+    SetT 1, "1.0", "Анализ и формализация требований (SRS: FR, NFR, UC)", 0.15, 0.25, 0.35, ""
+    SetT 2, "2.0", "Архитектура (C4, ADR) и каталог нотаций волны 1", 0.15, 0.25, 0.35, "1"
+    SetT 3, "3.0", "Мудборды и макеты интерфейса IDE", 0.15, 0.25, 0.35, "1"
+    SetT 4, "4.0", "Монорепозиторий, CI, Docker Compose, walking skeleton", 0.15, 0.25, 0.35, "2"
+    SetT 5, "5.0", "Грамматика DSL и парсер Lark с диагностикой", 0.5, 0.75, 1, "4"
+    SetT 6, "6.0", "Профили и валидация нотаций волны 1", 0.25, 0.5, 0.75, "5"
+    SetT 7, "7.0", "Gateway: CRUD проектов, аутентификация JWT", 0.25, 0.5, 0.75, "4"
+    SetT 8, "8.0", "Workspace: коммиты и история версий", 0.15, 0.25, 0.35, "7"
+    SetT 9, "9.0", "Оболочка IDE и интеграция Monaco", 0.25, 0.5, 0.75, "3,4"
+    SetT 10, "10.0", "SVG-холст, раскладка elkjs, кросс-подсветка", 0.25, 0.5, 0.75, "5,9"
+    SetT 11, "11.0", "Сохранение и экспорт SVG/PNG", 0.15, 0.25, 0.35, "8,10"
+    SetT 12, "12.0", "AI-ассистент: заглушка и адаптер LLM", 0.15, 0.25, 0.35, "7"
+    SetT 13, "13.0", "E2E-тестирование, Lighthouse, аудит безопасности", 0.15, 0.25, 0.35, "6,11,12"
+    SetT 14, "14.0", "Развёртывание демо-стенда, пояснительная записка", 0.15, 0.25, 0.35, "13"
+End Sub
+
+Private Sub SetT(i As Long, c As String, t As String, oo As Double, mm As Double, pp As Double, pr As String)
+    code(i) = c: nm(i) = t: o(i) = oo: m(i) = mm: p(i) = pp: preds(i) = pr
+    dur(i) = CLng(Round((oo + 4 * mm + pp) / 6 * 4, 0))   ' месяцы -> недели
+End Sub
+
+Private Function PredList(i As Long) As Variant
+    If preds(i) = "" Then PredList = Array() Else PredList = Split(preds(i), ",")
+End Function
+
+Private Function Codes(s As String) As String
+    Dim a As Variant, k As Long, r As String
+    If s = "" Then Codes = "—": Exit Function
+    a = Split(s, ",")
+    For k = LBound(a) To UBound(a)
+        r = r & IIf(r = "", "", ", ") & code(CLng(a(k)))
+    Next k
+    Codes = r
+End Function
+
+Private Sub CalcCPM()
+    Dim i As Long, j As Long, a As Variant, k As Long, fin As Long
+    For i = 1 To N: succ(i) = "": Next i
+    For i = 1 To N
+        a = PredList(i)
+        For k = LBound(a) To UBound(a)
+            j = CLng(a(k))
+            succ(j) = succ(j) & IIf(succ(j) = "", "", ",") & i
+        Next k
+    Next i
+    ' прямой проход (первый период = 1, как в шаблоне)
+    For i = 1 To N
+        es(i) = 1
+        a = PredList(i)
+        For k = LBound(a) To UBound(a)
+            If ef(CLng(a(k))) > es(i) Then es(i) = ef(CLng(a(k)))
+        Next k
+        ef(i) = es(i) + dur(i)
+    Next i
+    fin = 0
+    For i = 1 To N
+        If ef(i) > fin Then fin = ef(i)
+    Next i
+    ' обратный проход
+    For i = N To 1 Step -1
+        lf(i) = fin
+        If succ(i) <> "" Then
+            a = Split(succ(i), ",")
+            For k = LBound(a) To UBound(a)
+                If ls(CLng(a(k))) < lf(i) Then lf(i) = ls(CLng(a(k)))
+            Next k
+        End If
+        ls(i) = lf(i) - dur(i)
+    Next i
+End Sub
+
+Private Function Finish() As Long
+    Dim i As Long
+    For i = 1 To N
+        If ef(i) > Finish Then Finish = ef(i)
+    Next i
+End Function
+
+Private Function CriticalPath() As String
+    Dim i As Long, r As String
+    For i = 1 To N
+        If ls(i) = es(i) Then r = r & IIf(r = "", "", " -> ") & code(i)
+    Next i
+    CriticalPath = r
+End Function
+
+Private Function GetSheet(nameS As String) As Worksheet
+    On Error Resume Next
+    Set GetSheet = ThisWorkbook.Worksheets(nameS)
+    On Error GoTo 0
+    If GetSheet Is Nothing Then
+        Set GetSheet = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count))
+        GetSheet.Name = nameS
+    End If
+End Function
+
+Private Sub BuildWbsSheet()
+    Dim ws As Worksheet, i As Long, r As Long
+    Set ws = GetSheet("WBS NotaCode")
+    ws.Cells.Clear
+    ws.Range("A1").Value = "WBS и оценка длительностей по PERT — NotaCode (MVP веб-IDE «diagram as code»)"
+    ws.Range("A1").Font.Bold = True: ws.Range("A1").Font.Size = 13
+    ws.Range("A3:I3").Value = Array("Код WBS", "Название работы", "O, мес.", "M, мес.", "P, мес.", _
+        "T=(O+4M+P)/6, мес.", "sigma=(P-O)/6", "D, недель", "Непосредственные предшественники")
+    For i = 1 To N
+        r = 3 + i
+        ws.Cells(r, 1).NumberFormat = "@"
+        ws.Cells(r, 1).Value = code(i)
+        ws.Cells(r, 2).Value = nm(i)
+        ws.Cells(r, 3).Value = o(i): ws.Cells(r, 4).Value = m(i): ws.Cells(r, 5).Value = p(i)
+        ws.Cells(r, 6).FormulaR1C1 = "=(RC3+4*RC4+RC5)/6"
+        ws.Cells(r, 7).FormulaR1C1 = "=(RC5-RC3)/6"
+        ws.Cells(r, 8).FormulaR1C1 = "=ROUND(RC6*4,0)"
+        ws.Cells(r, 9).Value = Codes(preds(i))
+    Next i
+    r = 4 + N
+    ws.Cells(r, 2).Value = "Длительность проекта (по критическому пути), мес.:"
+    ws.Cells(r, 6).Value = (Finish() - 1) / 4
+    ws.Cells(r + 1, 2).Value = "Критический путь:"
+    ws.Cells(r + 1, 3).Value = CriticalPath()
+    ws.Range("A3:I3").Font.Bold = True
+    ws.Range("A3:I3").Interior.Color = RGB(217, 226, 243)
+    ws.Range("A3:I" & 3 + N).Borders.LineStyle = xlContinuous
+    ws.Range("F4:G" & 3 + N).NumberFormat = "0.00"
+    ws.Columns("A:I").AutoFit
+    ws.Columns("B").ColumnWidth = 55
+End Sub
+
+Private Sub FillDataTable()
+    Dim ws As Worksheet, i As Long, r As Long
+    Set ws = ThisWorkbook.Worksheets("ТАБЛИЦА ДАННЫХ")
+    ws.Range("C8:G32").ClearContents
+    ws.Range("J8:J32").ClearContents
+    For i = 1 To N
+        r = 7 + i
+        ws.Cells(r, 2).Value = i
+        ws.Cells(r, 3).Value = code(i) & " " & nm(i)
+        ws.Cells(r, 4).NumberFormat = "@": ws.Cells(r, 4).Value = IIf(preds(i) = "", "0", Replace(preds(i), ",", ", "))
+        ws.Cells(r, 5).NumberFormat = "@": ws.Cells(r, 5).Value = IIf(succ(i) = "", "0", Replace(succ(i), ",", ", "))
+        ws.Cells(r, 6).Value = es(i)
+        ws.Cells(r, 7).Value = dur(i)
+        ws.Cells(r, 8).FormulaR1C1 = "=RC6+RC7"          ' EF = ES + D
+        ws.Cells(r, 10).Value = lf(i)                   ' LF = MIN(LS последователей)
+        ws.Cells(r, 9).FormulaR1C1 = "=RC10-RC7"         ' LS = LF - D
+        ws.Cells(r, 11).FormulaR1C1 = "=RC9-RC6"         ' TS = LS - ES
+        ws.Cells(r, 12).FormulaR1C1 = "=IF(RC11=0,""ДА"",""НЕТ "")"
+    Next i
+    ' строки, не занятые работами: пусто и «НЕТ», чтобы планировщик не красил их
+    For r = 8 + N To 28
+        ws.Cells(r, 8).Value = 0: ws.Cells(r, 9).Value = 0: ws.Cells(r, 11).Value = 0
+        ws.Cells(r, 12).Value = "НЕТ "
+    Next r
+End Sub
+
+Private Sub TunePlanner()
+    Dim ws As Worksheet
+    On Error Resume Next
+    Set ws = ThisWorkbook.Worksheets("Планировщик проекта")
+    On Error GoTo 0
+    If ws Is Nothing Then Exit Sub
+    ws.Range("C1").Value = "Планировщик проекта — NotaCode (1 период = 1 неделя, старт " & START_DATE & ")"
+    ws.Range("J2").Value = Finish()
+End Sub
+
+Private Sub BuildGantt()
+    Dim ws As Worksheet, i As Long, w As Long, r As Long, fin As Long, d0 As Date
+    Set ws = GetSheet("Гант NotaCode")
+    ws.Cells.Clear
+    fin = Finish()
+    d0 = DateSerial(2026, 9, 21)   ' не зависит от региональных настроек
+    ws.Range("A1").Value = "Диаграмма Ганта — NotaCode. Старт " & START_DATE & _
+        ", длительность " & Format((fin - 1) / 4, "0.00") & " мес. (" & fin - 1 & " нед.). Критический путь: " & CriticalPath()
+    ws.Range("A1").Font.Bold = True
+    ws.Range("A3:F3").Value = Array("Код", "Работа", "D, нед.", "ES", "LF", "TS")
+    For w = 1 To fin
+        ws.Cells(2, 6 + w).Value = "Мес. " & Format((w - 1) / 4, "0.00")
+        ws.Cells(3, 6 + w).Value = Format(d0 + (w - 1) * 7, "dd.mm")
+        ws.Cells(2, 6 + w).Orientation = 90
+        ws.Columns(6 + w).ColumnWidth = 6
+    Next w
+    For i = 1 To N
+        r = 3 + i
+        ws.Cells(r, 1).NumberFormat = "@": ws.Cells(r, 1).Value = code(i)
+        ws.Cells(r, 2).Value = nm(i)
+        ws.Cells(r, 3).Value = dur(i)
+        ws.Cells(r, 4).Value = es(i)
+        ws.Cells(r, 5).Value = lf(i)
+        ws.Cells(r, 6).Value = ls(i) - es(i)
+        For w = es(i) To ef(i) - 1
+            If ls(i) = es(i) Then
+                ws.Cells(r, 6 + w).Interior.Color = RGB(192, 0, 0)
+            Else
+                ws.Cells(r, 6 + w).Interior.Color = RGB(91, 155, 213)
+            End If
+        Next w
+        For w = ef(i) To lf(i) - 1
+            ws.Cells(r, 6 + w).Interior.Pattern = xlLightUp
+            ws.Cells(r, 6 + w).Interior.PatternColor = RGB(127, 127, 127)
+        Next w
+    Next i
+    r = 5 + N
+    ws.Cells(r, 2).Value = "Красный — критическая работа (TS = 0)"
+    ws.Cells(r, 1).Interior.Color = RGB(192, 0, 0)
+    ws.Cells(r + 1, 2).Value = "Синий — некритическая работа"
+    ws.Cells(r + 1, 1).Interior.Color = RGB(91, 155, 213)
+    ws.Cells(r + 2, 2).Value = "Штриховка — резерв времени"
+    ws.Cells(r + 2, 1).Interior.Pattern = xlLightUp
+    ws.Range(ws.Cells(3, 1), ws.Cells(3 + N, 6 + fin - 1)).Borders.LineStyle = xlContinuous
+    ws.Range("A3:F3").Font.Bold = True
+    ws.Columns("B").ColumnWidth = 52
+    ws.Columns("A").ColumnWidth = 6
+End Sub
+
+Public Sub PZ2_RunAll()
+    Application.ScreenUpdating = False
+    LoadData
+    CalcCPM
+    BuildWbsSheet
+    FillDataTable
+    TunePlanner
+    BuildGantt
+    Application.ScreenUpdating = True
+    ThisWorkbook.Worksheets("Гант NotaCode").Activate
+    MsgBox "Готово." & vbCrLf & _
+        "Длительность проекта: " & Finish() - 1 & " нед. = " & Format((Finish() - 1) / 4, "0.00") & " мес." & vbCrLf & _
+        "Критический путь: " & CriticalPath(), vbInformation, "ПЗ2 — NotaCode"
+End Sub
