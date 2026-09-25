@@ -1,0 +1,6 @@
+*.bas -text
+*.xlsx binary
+*.docx binary
+*.pptx binary
+*.ppt binary
+*.png binary
