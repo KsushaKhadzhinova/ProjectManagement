@@ -79,6 +79,13 @@ def _borders(table):
     tbl_pr.append(borders)
 
 
+def _cant_split(row):
+    tr_pr = row._tr.get_or_add_trPr()
+    el = OxmlElement('w:cantSplit')
+    el.set(qn('w:val'), 'true')
+    tr_pr.append(el)
+
+
 def _repeat_header(row):
     tr_pr = row._tr.get_or_add_trPr()
     h = OxmlElement('w:tblHeader')
@@ -295,6 +302,12 @@ class STPReport:
                 cp.paragraph_format.first_line_indent = Cm(0)
                 cp.alignment = WD_ALIGN_PARAGRAPH.LEFT
                 _font(cp.add_run(str(val)), size)
+        for n, row in enumerate(t.rows):
+            _cant_split(row)
+            if n <= 2:
+                for cell in row.cells:
+                    for cp in cell.paragraphs:
+                        cp.paragraph_format.keep_with_next = True
         if widths_cm:
             total = sum(widths_cm)
             scale = min(1.0, TEXT_WIDTH_CM / total)
