@@ -9,7 +9,7 @@ from template_fill import (
     fill_table_rows, insert_after, insert_picture_after, remove_para, set_cell, set_para,
 )
 
-ROOT = r'E:\ИИТ\УправлениеПроектами'
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE = os.path.join(ROOT, 'ПЗ1_Концепция-проекта', '02_задание-оригиналы', 'Шаблон ПЗ1 - Концепция проекта (шаблон пз1 -УП- 26).docx')
 OUT_DIR = os.path.join(ROOT, 'ПЗ1_Концепция-проекта', '07_результаты')
 OUT = os.path.join(OUT_DIR, 'ПЗ1 - Концепция проекта - NotaCode - Хаджинова.docx')
