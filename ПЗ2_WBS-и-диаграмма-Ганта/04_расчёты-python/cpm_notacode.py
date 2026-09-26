@@ -130,9 +130,9 @@ def build_wbs_png():
     subprocess.run(['dot', '-Tpng', '-Gdpi=150', dot, '-o', dot[:-4] + '.png'], check=True)
 
 
-def build_network_png(res, order):
+def build_network_png(res, order, rankdir='LR', suffix=''):
     lines = ['digraph PDM {',
-             '  graph [rankdir=LR, nodesep=0.35, ranksep=0.55, fontname="Arial"];',
+             f'  graph [rankdir={rankdir}, nodesep=0.35, ranksep=0.45, fontname="Arial"];',
              '  node [shape=plaintext, fontname="Arial", fontsize=9];',
              '  edge [color="#555555"];',
              '  start [shape=circle, label="Старт", style=filled, fillcolor="#d9e2f3"];',
@@ -158,7 +158,7 @@ def build_network_png(res, order):
         if not r['succ']:
             lines.append(f'  {a} -> finish [color="#c00000", penwidth=2];')
     lines.append('}')
-    dot = os.path.join(SCHEMES, 'Сетевой график PDM - NotaCode.dot')
+    dot = os.path.join(SCHEMES, f'Сетевой график PDM - NotaCode{suffix}.dot')
     with open(dot, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
     subprocess.run(['dot', '-Tpng', '-Gdpi=150', dot, '-o', dot[:-4] + '.png'], check=True)
@@ -254,6 +254,7 @@ def main():
     path = critical_path(res, order)
     build_wbs_png()
     build_network_png(res, order)
+    build_network_png(res, order, 'TB', ' (A4)')
     build_gantt_png(res, order, finish)
     write_tables(res, order, finish, path)
     print('Длительность:', fmt(finish), 'мес.; критический путь:', ' → '.join(path))

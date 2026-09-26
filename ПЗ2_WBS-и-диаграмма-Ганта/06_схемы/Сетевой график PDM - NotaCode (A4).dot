@@ -1,5 +1,5 @@
 digraph PDM {
-  graph [rankdir=LR, nodesep=0.35, ranksep=0.45, fontname="Arial"];
+  graph [rankdir=TB, nodesep=0.35, ranksep=0.45, fontname="Arial"];
   node [shape=plaintext, fontname="Arial", fontsize=9];
   edge [color="#555555"];
   start [shape=circle, label="Старт", style=filled, fillcolor="#d9e2f3"];
