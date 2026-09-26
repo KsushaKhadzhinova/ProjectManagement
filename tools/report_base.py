@@ -11,7 +11,7 @@ from docx.shared import Cm, Pt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from template_fill import FONT, set_para, style_run
 
-ROOT = r'E:\ИИТ\УправлениеПроектами'
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE = os.path.join(ROOT, 'ПЗ1_Концепция-проекта', '02_задание-оригиналы', 'Шаблон ПЗ1 - Концепция проекта (шаблон пз1 -УП- 26).docx')
 TITLE_LAST = 43
 
