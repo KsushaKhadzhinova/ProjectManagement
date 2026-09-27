@@ -39,7 +39,7 @@ ProjectManagement/
 │   ├── report.md / report.docx    — заполненный отчёт (docx — по СТП БГУИР)
 │   ├── checklist.md                — чек-лист готовности
 │   ├── summary.md                  — краткое резюме «что и как делали»
-│   ├── risk-map.xlsx                — рабочая копия Excel-инструмента риск-карты
+│   ├── risk-map.xlsm                — рабочая копия Excel-инструмента риск-карты
 │   ├── modRiskMap.bas               — VBA-макрос: автозаполнение реестра рисков + подписи карты
 │   └── img/
 │       ├── stakeholder_quadrant.png — диаграмма матрицы стейкхолдеров
@@ -51,7 +51,7 @@ ProjectManagement/
     ├── report.md / report.docx
     ├── checklist.md
     ├── summary.md
-    ├── gantt-planner.xlsx          — рабочая копия Excel-инструмента диаграммы Ганта
+    ├── gantt-planner.xlsm          — рабочая копия Excel-инструмента диаграммы Ганта
     ├── modGanttCriticalPath.bas    — VBA-макрос: расчёт CPM + подсветка критического пути
     ├── calc_and_charts.py          — Python-скрипт: расчёт CPM + построение всех диаграмм (pz1 и pz4)
     └── img/

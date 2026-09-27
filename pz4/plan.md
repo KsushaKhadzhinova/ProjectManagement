@@ -15,7 +15,7 @@
    - `img/gantt_critical_path.png` — диаграмма Ганта с критическим путём (красный)
    - `img/network_diagram.png` — сетевой график (метод предшествования, PDM)
    - `img/cpm_table.csv` — таблица расчёта
-5. **(10 мин)** Заполнить `gantt-planner.xlsx` теми же данными через макрос `modGanttCriticalPath.bas` (альтернативный/дублирующий способ расчёта в Excel — см. `instructions.md`).
+5. **(10 мин)** Заполнить `gantt-planner.xlsm` теми же данными через макрос `modGanttCriticalPath.bas` (альтернативный/дублирующий способ расчёта в Excel — см. `instructions.md`).
 6. **(10 мин)** Проверить итог: длительность проекта = 7 месяцев, критический путь — 10 из 15 работ.
 
 Итоговый документ — [report.md](report.md) (и его STP-форматированная версия [report.docx](report.docx)).
