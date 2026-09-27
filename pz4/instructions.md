@@ -13,7 +13,7 @@
 | `img/gantt_critical_path.png` | Диаграмма Ганта, критический путь выделен красным, резервы — штриховкой |
 | `img/network_diagram.png` | Сетевой график методом предшествования (PDM), критические работы и связи — красным |
 | `img/cpm_table.csv` | Таблица ES/EF/LS/LF/резерв/признак критичности по всем 15 работам |
-| `gantt-planner.xlsx` + `modGanttCriticalPath.bas` | Excel-версия расчёта CPM с VBA-автозаполнением |
+| `../gantt-planner/gantt-planner.xlsx` + `../gantt-planner/modGanttCriticalPath.bas` | Excel-версия расчёта CPM с VBA-автозаполнением |
 | `calc_and_charts.py` | Python-скрипт: пересчитывает CPM и все диаграммы |
 
 ## 3. Формулы, которые используются (и как их проверить руками)
@@ -45,10 +45,10 @@ python calc_and_charts.py
 ```
 После изменения длительностей/предшественников в разделе 1 скрипта запусти его заново — файлы `img/*.png` и `img/cpm_table.csv` перезапишутся.
 
-## 5. Как использовать `gantt-planner.xlsx` + `modGanttCriticalPath.bas`
+## 5. Как использовать `../gantt-planner/gantt-planner.xlsx` + `../gantt-planner/modGanttCriticalPath.bas`
 
-1. Открой `gantt-planner.xlsx`.
-2. Alt+F11 → Insert → Module → вставь содержимое `modGanttCriticalPath.bas`.
+1. Открой `../gantt-planner/gantt-planner.xlsx`.
+2. Alt+F11 → Insert → Module → вставь содержимое `../gantt-planner/modGanttCriticalPath.bas`.
 3. Alt+F8 → `RunAll` → «Выполнить». Макрос заполнит лист «ТАБЛИЦА ДАННЫХ» (15 работ), рассчитает ES/EF/LS/LF/резерв и покрасит строки критического пути на листе «Планировщик проекта» красным.
 4. Проверь, что расчётная длительность проекта (в диалоговом окне макроса) совпадает с `report.md` — **7 месяцев**.
 5. Сохрани файл.

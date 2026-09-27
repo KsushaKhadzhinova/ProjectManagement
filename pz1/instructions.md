@@ -14,7 +14,7 @@
 | `report.md` / `report.docx` | Полностью заполненный отчёт по шаблону ПЗ1 |
 | `img/stakeholder_quadrant.png` | Диаграмма — матрица стейкхолдеров по квадрантам A/B/C/D |
 | `img/risk_map.png` | Карта рисков (см. пункт 4 ниже, для расширенной версии отчёта) |
-| `risk-map.xlsx` + `modRiskMap.bas` | Excel-инструмент риск-карты с VBA-автозаполнением |
+| `../risk-map/risk-map.xlsx` + `../risk-map/modRiskMap.bas` | Excel-инструмент риск-карты с VBA-автозаполнением |
 
 ## 3. Формулы и расчёты, которые нужно проверить
 
@@ -29,10 +29,10 @@ python ../pz4/calc_and_charts.py
 
 Скрипт пересчитает и перезапишет `img/stakeholder_quadrant.png` и `img/risk_map.png` (общий скрипт для ПЗ1 и ПЗ4, лежит в `pz4/`, т.к. также считает критический путь для ПЗ4).
 
-## 5. Как использовать `risk-map.xlsx` + `modRiskMap.bas`
+## 5. Как использовать `../risk-map/risk-map.xlsx` + `../risk-map/modRiskMap.bas`
 
-1. Открой `risk-map.xlsx` в Excel.
-2. Alt+F11 → Insert → Module → вставь содержимое `modRiskMap.bas`.
+1. Открой `../risk-map/risk-map.xlsx` в Excel.
+2. Alt+F11 → Insert → Module → вставь содержимое `../risk-map/modRiskMap.bas`.
 3. Alt+F8 → выбери `RunAll` → «Выполнить». Макрос заполнит реестр рисков (15 строк) и подпишет точки на карте рисков именами рисков.
 4. Сохрани файл.
 
@@ -42,4 +42,4 @@ python ../pz4/calc_and_charts.py
 2. Скриншот таблицы MoSCoW с подсчитанной долей Must.
 3. Скриншот дерева декомпозиции задач (раздел 4).
 4. Скриншот `img/stakeholder_quadrant.png` (уже вставлен в отчёт).
-5. Скриншот работы макроса `modRiskMap.bas` в Excel (до/после запуска).
+5. Скриншот работы макроса `../risk-map/modRiskMap.bas` в Excel (до/после запуска).
