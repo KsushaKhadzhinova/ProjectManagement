@@ -2,10 +2,10 @@
 
 Заполненная копия шаблона из `to do/`: реестр рисков проекта NotaCode + макрос.
 
-- `risk-map.xlsx` — рабочий файл
+- `risk-map.xlsm` — рабочий файл
 - `modRiskMap.bas` — макрос: заполняет реестр и подписывает точки на карте рисков
 - `risk_map.png` — диаграмма (сгенерирована `pz4/calc_and_charts.py`)
 
-Запуск: открыть `risk-map.xlsx`, Alt+F11 → Insert → Module → вставить `modRiskMap.bas`, Alt+F8 → `RunAll`.
+Запуск: открыть `risk-map.xlsm`, Alt+F11 → Insert → Module → вставить `modRiskMap.bas`, Alt+F8 → `RunAll`.
 
 Относится к ПЗ1 (`../pz1/`) — риски там разбираются как часть бизнес-обоснования.

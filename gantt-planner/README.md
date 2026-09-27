@@ -2,9 +2,9 @@
 
 Заполненная копия шаблона из `to do/`: расчёт критического пути (CPM) для WBS проекта NotaCode + макрос.
 
-- `gantt-planner.xlsx` — рабочий файл
+- `gantt-planner.xlsm` — рабочий файл
 - `modGanttCriticalPath.bas` — макрос: считает ES/EF/LS/LF/резерв, подсвечивает критический путь
 
-Запуск: открыть `gantt-planner.xlsx`, Alt+F11 → Insert → Module → вставить `modGanttCriticalPath.bas`, Alt+F8 → `RunAll`. Ожидаемая длительность проекта — 7 месяцев.
+Запуск: открыть `gantt-planner.xlsm`, Alt+F11 → Insert → Module → вставить `modGanttCriticalPath.bas`, Alt+F8 → `RunAll`. Ожидаемая длительность проекта — 7 месяцев.
 
 Относится к ПЗ4 (`../pz4/`) — тот же расчёт продублирован там на Python для сверки.
