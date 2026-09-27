@@ -148,7 +148,7 @@ Public Sub CalculateCPM()
         ws.Cells(rowIdx, "I").Value = tasks(i).LS             ' ПОЗДНИЙ СТАРТ
         ws.Cells(rowIdx, "J").Value = tasks(i).LF             ' ПОЗДНИЙ ФИНИШ
         ws.Cells(rowIdx, "K").Value = tasks(i).Slack          ' РЕЗЕРВ
-        ws.Cells(rowIdx, "L").Value = IIf(tasks(i).Critical, "ДА", "НЕТ ") ' КРИТИЧЕСКИЙ ПУТЬ
+        ws.Cells(rowIdx, "L").Value = IIf(tasks(i).Critical, "ДА", "НЕТ") ' КРИТИЧЕСКИЙ ПУТЬ
         rowIdx = rowIdx + 1
     Next i
 
@@ -166,8 +166,11 @@ Private Function CriticalCount(tasks() As TTask) As Long
     CriticalCount = c
 End Function
 
-' Красит строки критического пути на листе "Планировщик проекта"
-' (столбец I "КРИТИЧЕСКИЙ ПУТЬ" = 100%) в красный цвет заливки строки 3..29.
+' Красит строки критического пути на листе "Планировщик проекта" в красный
+' цвет заливки, читая признак Critical напрямую из рассчитанного массива
+' tasks() (а не из ячеек другого листа - там этот признак не хранится).
+' Строка листа "Планировщик проекта" = 5 + порядковый номер задачи - 1,
+' так как первая работа записывается в строку 5 (см. B5 в шаблоне).
 Private Sub HighlightCriticalPath(tasks() As TTask)
     Dim wsPlan As Worksheet
     On Error Resume Next
@@ -175,15 +178,14 @@ Private Sub HighlightCriticalPath(tasks() As TTask)
     On Error GoTo 0
     If wsPlan Is Nothing Then Exit Sub
 
-    Dim r As Long
-    For r = 5 To 5 + UBound(tasks) - LBound(tasks)
-        Dim critVal As Variant
-        critVal = wsPlan.Cells(r, "I").Value
-        If critVal = 1 Or critVal = "100%" Then
+    Dim i As Long, r As Long
+    For i = LBound(tasks) To UBound(tasks)
+        r = 5 + (i - LBound(tasks))
+        If tasks(i).Critical Then
             wsPlan.Range(wsPlan.Cells(r, "C"), wsPlan.Cells(r, "F")).Interior.Color = RGB(255, 199, 206)
             wsPlan.Range(wsPlan.Cells(r, "C"), wsPlan.Cells(r, "F")).Font.Color = RGB(156, 0, 6)
         End If
-    Next r
+    Next i
 End Sub
 
 Public Sub RunAll()

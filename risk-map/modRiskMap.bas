@@ -129,7 +129,6 @@ End Sub
 Public Sub LabelRiskMapPoints()
     Dim wsMap As Worksheet
     Dim ch As ChartObject
-    Dim s As Series
     Dim wsData As Worksheet
     Dim namesRange As Range
 

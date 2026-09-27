@@ -185,8 +185,8 @@ stakeholders = [
 ]
 
 fig, ax = plt.subplots(figsize=(8, 8))
-ax.axvline(3, color="black", linewidth=1)
-ax.axhline(3, color="black", linewidth=1)
+ax.axvline(2.5, color="black", linewidth=1)
+ax.axhline(3.5, color="black", linewidth=1)
 ax.set_xlim(0.5, 5.5)
 ax.set_ylim(0.5, 5.5)
 for name, infl, interest in stakeholders:
